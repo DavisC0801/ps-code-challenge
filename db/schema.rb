@@ -16,11 +16,11 @@ ActiveRecord::Schema.define(version: 2020_02_04_194441) do
   enable_extension "plpgsql"
 
   create_table "restaurants", force: :cascade do |t|
-    t.text "name"
-    t.text "address"
-    t.text "post_code"
+    t.string "name"
+    t.string "address"
+    t.string "post_code"
     t.integer "number_of_chairs"
-    t.text "category"
+    t.string "category"
   end
 
 end
