@@ -18,13 +18,14 @@ namespace :import do
   task :restaurants do
     Rake::Task['import:setup'].invoke
     CSV.foreach('./Street Cafes 2015-16.csv', :headers => true, :encoding => "ISO-8859-1") do |row|
-        new_resturant = row.to_hash
-        Restaurant.create(
-          name:new_resturant["Café/Restaurant Name"],
-          address:new_resturant["Street Address"],
-          post_code:new_resturant["Post Code"],
-          number_of_chairs:new_resturant["Number of Chairs"],
+        new_resturant_data = row.to_hash
+        new_resturant = Restaurant.create!(
+          name:new_resturant_data["Café/Restaurant Name"],
+          address:new_resturant_data["Street Address"],
+          post_code:new_resturant_data["Post Code"],
+          number_of_chairs:new_resturant_data["Number of Chairs"],
         )
+        new_resturant.determine_category
     end
   end
 end
