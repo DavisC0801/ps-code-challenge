@@ -41,6 +41,16 @@ class Restaurant < ApplicationRecord
     else
       self.category = 'other'
     end
-    self.save()
+    self.save
+  end
+
+  def self.rename_large
+    large_restaurants = self.where(["category LIKE ?", "%large"]).unscope(:order)
+    # small check to prevent task being ran multiple times, unlikely first and last will both be named after the category
+    if !large_restaurants.first.name.include?(large_restaurants.first.category) && !large_restaurants.last.name.include?(large_restaurants.last.category)
+      large_restaurants.each do |restaurant|
+        restaurant.update(name: "#{restaurant.category} #{restaurant.name}")
+      end
+    end
   end
 end
