@@ -41,6 +41,28 @@ class Restaurant < ApplicationRecord
     else
       self.category = 'other'
     end
-    self.save()
+    self.save
+  end
+
+  def self.export_small
+    small_restaurants = self.where(["category LIKE ?", "%small"]).unscope(:order)
+    if !small_restaurants.empty?
+      CSV.open("./Small Cafes 2015-16.csv", "w") do |csv|
+        small_restaurants.each do |restaurant|
+          csv << [restaurant.name, restaurant.address, restaurant.post_code, restaurant.number_of_chairs, restaurant.category]
+          restaurant.destroy()
+        end
+      end
+    end
+  end
+
+  def self.rename_large
+    large_restaurants = self.where(["category LIKE ?", "%large"]).unscope(:order)
+    # small check to prevent task being ran multiple times, unlikely first and last will both be named after the category
+    if !large_restaurants.first.name.include?(large_restaurants.first.category) && !large_restaurants.last.name.include?(large_restaurants.last.category)
+      large_restaurants.each do |restaurant|
+        restaurant.update(name: "#{restaurant.category} #{restaurant.name}")
+      end
+    end
   end
 end

@@ -124,5 +124,27 @@ RSpec.describe Restaurant, type: :model do
 
       expect(stats.to_a.count).to eq(6)
     end
+
+    it "will export and delete all small category resturants" do
+      small_restaurants = Restaurant.export_small
+      CSV.foreach('./Small Cafes 2015-16.csv') do |row|
+          expect(row.last).to end_with("small")
+      end
+      small_restaurant_confirm = Restaurant.where(["category LIKE ?", "%small"]).unscope(:order)
+      expect(small_restaurant_confirm).to eq([])
+    end
+
+    it "will rename all large category restaurants" do
+      large_renamed = Restaurant.rename_large
+
+      expect(large_renamed[0].name).to eq("ls2 large All Bar One")
+      expect(large_renamed[1].name).to eq("ls2 large Peachy Keens")
+      expect(large_renamed[2].name).to eq("ls1 large Restaurant Bar and Grill")
+      expect(large_renamed[3].name).to eq("ls2 large Revolution")
+      expect(large_renamed[4].name).to eq("ls2 large Tiger Tiger")
+
+
+      expect(large_renamed.to_a.count).to eq(5)
+    end
   end
 end
