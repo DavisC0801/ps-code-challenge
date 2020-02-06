@@ -15,8 +15,8 @@ class Restaurant < ApplicationRecord
   end
 
   def determine_category
-    prefix = self.post_code.slice(0,3)
-    if prefix == "LS1"
+    prefix = self.post_code.slice(0,4)
+    if prefix == "LS1 "
       chairs = self.number_of_chairs
       if chairs < 10
         self.category = 'ls1 small'
@@ -25,12 +25,13 @@ class Restaurant < ApplicationRecord
       else
         self.category = "ls1 large"
       end
-    elsif prefix == "LS2"
-      self.category = "ls2 small"
-      self.category = "ls2 large"
-      # todo - impliment percentile function
-      # of chairs below the 50th percentile for ls2: category = 'ls2 small'
-      # of chairs above the 50th percentile for ls2: category = 'ls2 large'
+    elsif prefix == "LS2 "
+      average_seats = Restaurant.where(["post_code LIKE ?", "LS2%"]).unscope(:order).average(:number_of_chairs).to_f
+      if self.number_of_chairs < average_seats
+        self.category = "ls2 small"
+      else
+        self.category = "ls2 large"
+      end
     else
       self.category = 'other'
     end
