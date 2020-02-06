@@ -21,6 +21,7 @@ RSpec.describe Restaurant, type: :model do
           post_code:new_resturant_data["Post Code"],
           number_of_chairs:new_resturant_data["Number of Chairs"],
         )
+        new_resturant.determine_category
       end
     end
 
@@ -105,6 +106,23 @@ RSpec.describe Restaurant, type: :model do
         # of chairs above the 50th percentile for ls2: category = 'ls2 large'
       # For Post Code is something else:
         # category = 'other'
+    end
+
+    it "finds the stats for restaurants grouped by post code" do
+      stats = Restaurant.find_category_stats
+      expect(stats[0].category).to eq("other")
+      expect(stats[0].total_places).to eq(2)
+      expect(stats[0].total_chairs).to eq(67)
+
+      expect(stats[2].category).to eq("ls2 large")
+      expect(stats[2].total_places).to eq(4)
+      expect(stats[2].total_chairs).to eq(438)
+
+      expect(stats[-1].category).to eq("ls1 large")
+      expect(stats[-1].total_places).to eq(1)
+      expect(stats[-1].total_chairs).to eq(152)
+
+      expect(stats.to_a.count).to eq(6)
     end
   end
 end
