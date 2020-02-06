@@ -1,0 +1,20 @@
+<table>
+  <tr id="header">
+    <th>Post Code</th>
+    <th>Locations in this Post Code</th>
+    <th>Total chairs in this Post Code</th>
+    <th>Percentage of chairs in this Post Code</th>
+    <th>Location with most chairs</th>
+    <th>Number of chairs at largest location</th>
+  </tr>
+  <% @post_code_stats.each_with_index do |stat, i| %>
+  <tr id="restaurant_<%= i+1 =%>">
+    <td><%= stat.post_code %></td>
+    <td><%= stat.total_places %></td>
+    <td><%= stat.total_chairs %></td>
+    <td><%= stat.chairs_pct.round(2) %>%</td> 
+    <td><%= @seat_stats[i].place_with_max_chairs %></td>
+    <td><%= @seat_stats[i].max_chairs %></td>
+  </tr>
+  <% end %>
+</table>
