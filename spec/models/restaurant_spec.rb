@@ -11,7 +11,7 @@ RSpec.describe Restaurant, type: :model do
   end
 
   describe 'class methods' do
-    before :all do
+    before :each do
       # Using the full dataset for the fixture due to small size
       CSV.foreach('./Street Cafes 2015-16.csv', :headers => true, :encoding => "ISO-8859-1") do |row|
         new_resturant_data = row.to_hash
