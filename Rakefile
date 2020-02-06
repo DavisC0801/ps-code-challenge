@@ -31,6 +31,10 @@ namespace :import do
 end
 
 namespace :utility do
+  task export_small: :environment do
+    Restaurant.export_small
+  end
+
   task rename_large: :environment do
     Restaurant.rename_large
   end
