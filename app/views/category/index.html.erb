@@ -5,7 +5,7 @@
     <th>Total chairs in this Category</th>
   </tr>
   <% @category_stats.each do |stat| %>
-  <tr id="category_<%= stat.category =%>">
+  <tr id="category_<%= stat.category.parameterize(separator: '_') =%>">
     <td><%= stat.category %></td>
     <td><%= stat.total_places %></td>
     <td><%= stat.total_chairs %></td>
