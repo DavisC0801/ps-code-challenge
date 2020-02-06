@@ -59,5 +59,52 @@ RSpec.describe Restaurant, type: :model do
 
       expect(stats.to_a.count).to eq(52)
     end
+
+    it "categorizes restaurants by post code and size" do
+      small_ls1 = Restaurant.new(name: "small_ls1", address: "123 fake St", post_code:"LS1 001", number_of_chairs: 5)
+      medium_ls1 = Restaurant.new(name: "small_ls1", address: "123 fake St", post_code:"LS1 002", number_of_chairs: 50)
+      medium_ls1_edge = Restaurant.new(name: "small_ls1", address: "123 fake St", post_code:"LS1 002", number_of_chairs: 10)
+      large_ls1 = Restaurant.new(name: "small_ls1", address: "123 fake St", post_code:"LS1 003", number_of_chairs: 500)
+      large_ls1_edge = Restaurant.new(name: "small_ls1", address: "123 fake St", post_code:"LS1 003", number_of_chairs: 100)
+
+      small_ls2 = Restaurant.new(name: "small_ls1", address: "123 fake St", post_code:"LS2 001", number_of_chairs: 10)
+      large_ls2 = Restaurant.new(name: "small_ls1", address: "123 fake St", post_code:"LS2 003", number_of_chairs: 60)
+
+      other1 = Restaurant.new(name: "small_ls1", address: "123 fake St", post_code:"LS10 1JT", number_of_chairs: 35)
+      other2 = Restaurant.new(name: "small_ls1", address: "123 fake St", post_code:"LS7 3PD", number_of_chairs: 32)
+
+      small_ls1.determine_category
+      expect(small_ls1.category).to eq("ls1 small")
+      medium_ls1.determine_category
+      expect(medium_ls1.category).to eq("ls1 medium")
+      medium_ls1_edge.determine_category
+      expect(medium_ls1_edge.category).to eq("ls1 medium")
+      large_ls1.determine_category
+      expect(large_ls1.category).to eq("ls1 large")
+      large_ls1_edge.determine_category
+      expect(large_ls1_edge.category).to eq("ls1 large")
+
+      # Current 50th percentile cutoff is 57.3
+      small_ls2.determine_category
+      expect(small_ls2.category).to eq("ls2 small")
+      large_ls2.determine_category
+      expect(large_ls2.category).to eq("ls2 large")
+
+      other1.determine_category
+      expect(other1.category).to eq("other")
+      other2.determine_category
+      expect(other2.category).to eq("other")
+
+      # expected behavior:
+      # If the Post Code is of the LS1 prefix type:
+        # of chairs less than 10: category = 'ls1 small'
+        # of chairs greater than or equal to 10, less than 100: category = 'ls1 medium'
+        # of chairs greater than or equal to 100: category = 'ls1 large'
+      # If the Post Code is of the LS2 prefix type:
+        # of chairs below the 50th percentile for ls2: category = 'ls2 small'
+        # of chairs above the 50th percentile for ls2: category = 'ls2 large'
+      # For Post Code is something else:
+        # category = 'other'
+    end
   end
 end
