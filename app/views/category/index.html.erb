@@ -1,0 +1,14 @@
+<table>
+  <tr id="header">
+    <th>Category</th>
+    <th>Locations in this Category</th>
+    <th>Total chairs in this Category</th>
+  </tr>
+  <% @category_stats.each do |stat| %>
+  <tr id="category_<%= stat.category =%>">
+    <td><%= stat.category %></td>
+    <td><%= stat.total_places %></td>
+    <td><%= stat.total_chairs %></td>
+  </tr>
+  <% end %>
+</table>
