@@ -15,7 +15,7 @@ namespace :import do
     Rake::Task['db:migrate'].invoke
   end
 
-  task :restaurants do
+  task restaurants: :environment do
     Rake::Task['import:setup'].invoke
     CSV.foreach('./Street Cafes 2015-16.csv', :headers => true, :encoding => "ISO-8859-1") do |row|
         new_resturant_data = row.to_hash
@@ -27,5 +27,11 @@ namespace :import do
         )
         new_resturant.determine_category
     end
+  end
+end
+
+namespace :utility do
+  task rename_large: :environment do
+    Restaurant.rename_large
   end
 end
