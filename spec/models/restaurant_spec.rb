@@ -84,6 +84,7 @@ RSpec.describe Restaurant, type: :model do
       large_ls1_edge.determine_category
       expect(large_ls1_edge.category).to eq("ls1 large")
 
+      # Current 50th percentile cutoff is 57.3
       small_ls2.determine_category
       expect(small_ls2.category).to eq("ls2 small")
       large_ls2.determine_category
@@ -93,6 +94,17 @@ RSpec.describe Restaurant, type: :model do
       expect(other1.category).to eq("other")
       other2.determine_category
       expect(other2.category).to eq("other")
+
+      # expected behavior:
+      # If the Post Code is of the LS1 prefix type:
+        # of chairs less than 10: category = 'ls1 small'
+        # of chairs greater than or equal to 10, less than 100: category = 'ls1 medium'
+        # of chairs greater than or equal to 100: category = 'ls1 large'
+      # If the Post Code is of the LS2 prefix type:
+        # of chairs below the 50th percentile for ls2: category = 'ls2 small'
+        # of chairs above the 50th percentile for ls2: category = 'ls2 large'
+      # For Post Code is something else:
+        # category = 'other'
     end
   end
 end
