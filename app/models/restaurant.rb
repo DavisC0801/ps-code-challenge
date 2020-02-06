@@ -14,6 +14,12 @@ class Restaurant < ApplicationRecord
     .order(:post_code)
   end
 
+  def self.find_category_stats
+    select("category, COUNT(id) AS total_places, SUM(number_of_chairs) AS total_chairs")
+    .group(:category)
+    .order(category: :desc)
+  end
+
   def determine_category
     prefix = self.post_code.slice(0,4)
     if prefix == "LS1 "
